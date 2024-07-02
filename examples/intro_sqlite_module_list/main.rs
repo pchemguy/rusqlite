@@ -23,5 +23,19 @@ fn main() -> Result<()> {
         }
     }
 
+    stmt = conn.prepare("SELECT lower('щЩэЭюЮфФ') || upper('щЩэЭюЮфФ')")?;
+    let rows = stmt.query_map([], |row| {
+        Ok(Item {
+            name: row.get(0)?,
+        })
+    })?;
+
+    for item in rows {
+        match item {
+            Ok(i) => println!("CI Test: {text}", text = i.name),
+            Err(e) => eprintln!("Error: {e:?}"),
+        }
+    }
+
     Ok(())
 }
